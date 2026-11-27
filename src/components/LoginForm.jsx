@@ -26,7 +26,7 @@ export default function LoginForm({ error, setError }) {
 
   return (
     <div style={{ padding: 24, fontFamily: 'sans-serif', maxWidth: 420, margin: '40px auto' }}>
-      <h1>Gestión de Iglesia</h1>
+      <h1>Gestión de Iglesiassss</h1>
       <p>Inicia sesión con tu cuenta registrada.</p>
 
       {error && (
