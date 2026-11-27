@@ -200,7 +200,12 @@ export default function App() {
   }
 
   const recargar = () => session?.user?.id && cargarPerfilYDatos(session.user.id)
-  const esAdmin = perfilUsuario?.roles?.nombre === 'admin'
+
+  // AQUÍ ESTÁ LA PARTE 5: Calculamos permisos según el rol
+  const rolActual = perfilUsuario?.roles?.nombre
+  const esAdmin = rolActual === 'admin'
+  const puedeBorrar = rolActual === 'admin' || rolActual === 'pastor'
+
   const pestañasVisibles = esAdmin
     ? [...PESTAÑAS_BASE, { id: 'usuarios', label: 'Usuarios y Roles' }]
     : PESTAÑAS_BASE
@@ -230,7 +235,7 @@ export default function App() {
                 ? `${perfilUsuario.personas.nombres} ${perfilUsuario.personas.apellidos}`
                 : session.user.email}
             </strong>{' '}
-            — Rol: <strong>{perfilUsuario?.roles?.nombre || 'sin perfil'}</strong>
+            — Rol: <strong>{rolActual || 'sin perfil'}</strong>
           </p>
         </div>
         <button type="button" onClick={() => supabase.auth.signOut()}>
@@ -289,32 +294,47 @@ export default function App() {
         </p>
       )}
 
+      {/* AQUÍ PASAMOS "puedeBorrar" A LAS PESTAÑAS QUE TIENEN BOTÓN ELIMINAR */}
       {pestañaActiva === 'personas' && (
-        <PersonasTab personas={personas} onRecargar={recargar} setError={setError} />
-      )}
-      {pestañaActiva === 'seguimientos' && (
-        <SeguimientosTab
+        <PersonasTab
           personas={personas}
-          seguimientos={seguimientos}
+          puedeBorrar={puedeBorrar}
           onRecargar={recargar}
           setError={setError}
         />
       )}
+      {pestañaActiva === 'seguimientos' && (
+        <SeguimientosTab
+         personas={personas}
+    seguimientos={seguimientos}
+    puedeBorrar={puedeBorrar}
+    onRecargar={recargar}
+    setError={setError}
+        />
+      )}
       {pestañaActiva === 'grupos' && (
-        <GruposTab personas={personas} grupos={grupos} onRecargar={recargar} setError={setError} />
+        <GruposTab
+          personas={personas}
+          grupos={grupos}
+          puedeBorrar={puedeBorrar}
+          onRecargar={recargar}
+          setError={setError}
+        />
       )}
       {pestañaActiva === 'familias' && (
         <FamiliasTab
-          personas={personas}
-          familias={familias}
-          onRecargar={recargar}
-          setError={setError}
+         personas={personas}
+    familias={familias}
+    puedeBorrar={puedeBorrar}
+    onRecargar={recargar}
+    setError={setError}
         />
       )}
       {pestañaActiva === 'reuniones' && (
         <ReunionesTab
           personas={personas}
           reuniones={reuniones}
+          puedeBorrar={puedeBorrar}
           onRecargar={recargar}
           setError={setError}
         />

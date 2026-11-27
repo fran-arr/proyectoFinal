@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 
-export default function FamiliasTab({ personas, familias, onRecargar, setError }) {
+export default function FamiliasTab({ personas, familias, puedeBorrar, onRecargar, setError }) {
   const [nombreFamilia, setNombreFamilia] = useState('')
   const [telefonoHogar, setTelefonoHogar] = useState('')
   const [personaId, setPersonaId] = useState('')
   const [familiaId, setFamiliaId] = useState('')
   const [parentesco, setParentesco] = useState('cabeza_hogar')
   const [guardando, setGuardando] = useState(false)
+
+  // Edición de familia
+  const [editId, setEditId] = useState(null)
+  const [editNombre, setEditNombre] = useState('')
+  const [editTelefono, setEditTelefono] = useState('')
 
   async function handleAgregarFamilia(e) {
     e.preventDefault()
@@ -28,6 +33,47 @@ export default function FamiliasTab({ personas, familias, onRecargar, setError }
 
     setNombreFamilia('')
     setTelefonoHogar('')
+    onRecargar()
+  }
+
+  function empezarEdicion(familia) {
+    setEditId(familia.id)
+    setEditNombre(familia.nombre_familia || '')
+    setEditTelefono(familia.telefono_hogar || '')
+  }
+
+  async function handleGuardarEdicion(e, id) {
+    e.preventDefault()
+    if (!editNombre.trim()) return
+
+    setGuardando(true)
+    setError(null)
+
+    const { error } = await supabase
+      .from('familias')
+      .update({
+        nombre_familia: editNombre.trim(),
+        telefono_hogar: editTelefono.trim() || null,
+      })
+      .eq('id', id)
+
+    setGuardando(false)
+    if (error) return setError(error.message)
+
+    setEditId(null)
+    onRecargar()
+  }
+
+  async function handleEliminarFamilia(id, nombre) {
+    if (!window.confirm(`¿Eliminar la familia "${nombre}"?`)) return
+
+    setGuardando(true)
+    setError(null)
+
+    const { error } = await supabase.from('familias').delete().eq('id', id)
+
+    setGuardando(false)
+    if (error) return setError(error.message)
     onRecargar()
   }
 
@@ -52,6 +98,21 @@ export default function FamiliasTab({ personas, familias, onRecargar, setError }
     setPersonaId('')
     setFamiliaId('')
     setParentesco('cabeza_hogar')
+    onRecargar()
+  }
+
+  async function handleQuitarIntegrante(idFamilia, idPersona) {
+    setGuardando(true)
+    setError(null)
+
+    const { error } = await supabase
+      .from('persona_familia')
+      .delete()
+      .eq('familia_id', idFamilia)
+      .eq('persona_id', idPersona)
+
+    setGuardando(false)
+    if (error) return setError(error.message)
     onRecargar()
   }
 
@@ -112,14 +173,71 @@ export default function FamiliasTab({ personas, familias, onRecargar, setError }
       <h3>Familias e integrantes ({familias.length})</h3>
       <ul style={{ paddingLeft: 18 }}>
         {familias.map((familia) => (
-          <li key={familia.id} style={{ marginBottom: 12 }}>
-            <strong>{familia.nombre_familia}</strong>
-            {familia.telefono_hogar ? ` — Tel: ${familia.telefono_hogar}` : ''}
+          <li key={familia.id} style={{ marginBottom: 14 }}>
+            {editId === familia.id ? (
+              <form
+                onSubmit={(e) => handleGuardarEdicion(e, familia.id)}
+                style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap' }}
+              >
+                <input
+                  type="text"
+                  value={editNombre}
+                  onChange={(e) => setEditNombre(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  value={editTelefono}
+                  onChange={(e) => setEditTelefono(e.target.value)}
+                  placeholder="Teléfono del hogar"
+                />
+                <button type="submit" disabled={guardando}>
+                  Guardar
+                </button>
+                <button type="button" onClick={() => setEditId(null)}>
+                  Cancelar
+                </button>
+              </form>
+            ) : (
+              <>
+                <strong>{familia.nombre_familia}</strong>
+                {familia.telefono_hogar ? ` — Tel: ${familia.telefono_hogar}` : ''}
+                <button
+                  type="button"
+                  disabled={guardando}
+                  onClick={() => empezarEdicion(familia)}
+                  style={{ marginLeft: 8 }}
+                >
+                  Editar
+                </button>
+                {puedeBorrar && (
+                  <button
+                    type="button"
+                    disabled={guardando}
+                    onClick={() => handleEliminarFamilia(familia.id, familia.nombre_familia)}
+                    style={{ marginLeft: 6, color: 'crimson' }}
+                  >
+                    Eliminar
+                  </button>
+                )}
+              </>
+            )}
+
             <ul>
               {(familia.persona_familia || []).map((rel, idx) => (
                 <li key={`${familia.id}-${rel.personas?.id || idx}`}>
                   {rel.personas ? `${rel.personas.nombres} ${rel.personas.apellidos}` : 'Persona'} —{' '}
                   <em>{rel.parentesco}</em>
+                  {rel.personas?.id && (
+                    <button
+                      type="button"
+                      disabled={guardando}
+                      onClick={() => handleQuitarIntegrante(familia.id, rel.personas.id)}
+                      style={{ marginLeft: 8, fontSize: 12 }}
+                    >
+                      Quitar
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
