@@ -1,0 +1,124 @@
+/* Login — basado en la plantilla "Pattern" (public/pattern) */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 5vh, 3rem);
+  padding: clamp(2.5rem, 10vh, 5rem) 1rem 3rem;
+  background-color: var(--color-bg-fallback);
+  background-image: url('../../assets/images/login-background.jpg');
+  background-attachment: fixed;
+  font-family: var(--font-display);
+  font-weight: 100;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Título */
+.header {
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.25rem, 6vw, 3.125rem);
+  font-weight: bold;
+  color: var(--color-text-dark);
+  letter-spacing: 0.02em;
+}
+
+.titleAccent {
+  color: var(--color-accent);
+}
+
+/* Tarjeta */
+.card {
+  width: 100%;
+  max-width: 30rem;
+  padding: 3rem clamp(1.25rem, 6vw, 3rem);
+  background: var(--color-card);
+  border-radius: 25px;
+  color: var(--color-text-light);
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.25);
+}
+
+.subtitle {
+  margin: 0 0 1.5rem;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.error {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgb(220 38 38 / 0.15);
+  border: 1px solid rgb(248 113 113 / 0.6);
+  color: #fecaca;
+  font-size: 0.95rem;
+  font-weight: normal;
+}
+
+/* Formulario */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 1.05rem;
+}
+
+.input {
+  height: 2.75rem;
+  padding: 0 1.1rem;
+  border: 1px solid var(--color-text-light);
+  border-radius: 20px;
+  background: var(--color-text-light);
+  color: var(--color-text-dark);
+  font-family: inherit;
+  font-size: 1.05rem;
+}
+
+.input:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Botón: contorno blanco que se rellena al pasar el mouse */
+.submit {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-text-light);
+  border-radius: 20px;
+  background: none;
+  color: var(--color-text-light);
+  font-family: inherit;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.submit:hover:not(:disabled),
+.submit:focus-visible {
+  background: var(--color-text-light);
+  color: var(--color-text-dark);
+}
+
+.submit:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

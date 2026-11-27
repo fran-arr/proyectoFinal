@@ -1,0 +1,327 @@
+a{
+	color:#fff;
+	transition:color 0.3s;
+}
+a:hover{
+	color:#18349b;
+}
+h1{
+	font-size:120px;
+	margin:0px;
+}
+h2{
+	font-size:50px;
+	margin:0px;
+	font-weight: bold;
+    color:black;
+}
+h3{
+	font-size:25px;
+	margin:0px;
+	font-weight: 100;
+}
+.green{
+    color:#006600;
+}
+body{
+	background:#5fa3ff;
+	background:url("images/background.jpg");
+	background-attachment:fixed;
+	background-size: auto;
+	color:#fff;
+	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; 
+    font-weight:100;
+	-webkit-font-smoothing: antialiased;
+	margin:0px;
+}
+hr{
+	width:40%;
+	border:1px solid #fff;
+	
+}
+.page_wrapper{
+	margin-top:5%;
+	display:table;
+	width:100%;
+}
+.header{
+	text-align:center;
+	font-size:120px;
+	margin-top:80px;
+	color: #fff;
+
+}
+.navigation_wrapper{
+	width:80%;
+	margin:0px auto;
+}
+.logo{
+	display: inline;
+	font-size:25px;
+}
+.navigation{
+	margin-left:10%;
+	display: inline;
+}
+.navigation a{
+	text-decoration:none;
+	padding:13px;
+}
+.navigation a:hover{
+	text-decoration:none;
+	padding:13px;
+	color:#000;
+	background:#fff
+}
+.table{
+	display:table;
+	width:100%;
+	margin:0px auto;
+}
+.table_cell{
+	display:table-cell;
+	vertical-align: top;
+	text-align:center;
+}
+.half{
+	width:50%;
+}
+.quater{
+	width:25%;
+}
+.right{
+	border-left:1px solid #fff;
+}
+
+.float_message{
+	margin-left:10%;
+}
+.content{
+	margin-left: 20%;
+	margin-right: 20%;
+}
+.drop{
+	width:30px;
+	float:right;
+	
+}
+.footer{
+	padding-top:20px;
+	border-top:1px solid #fff;
+	width:30%;
+	margin:0px auto;
+	margin-top:100px;
+}
+
+
+/*Login Styling*/
+#login{
+	overflow:hidden;
+}
+#outer_table{
+	background:none;
+	width:100%;
+}
+#inner_table{
+	background:#000;
+    background-position: center;
+    border-radius: 25px;
+	width:70%;
+	padding-bottom: 50px;
+	padding-top: 50px;
+    margin-left:20%;
+}
+#main{
+	background:none;
+}
+
+form{
+	color:#fff;
+	font-size:20px;
+	width:60%;
+	font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; 
+    font-weight:100;
+	-webkit-font-smoothing: antialiased;
+}
+#inner_table td{
+	color:#fff!important;
+}
+#inner_table a{
+	color:#fff!important;
+}
+#inner_table a:hover{
+	color:#e3e3e3!important;
+}
+/*CODE INPUT*/
+#inner_table input[name=code]{
+	font-size:40px!important;
+	height:45px;
+	background:#fff;
+	border:1px solid #fff;
+    border-radius:25px;
+	width:100%;
+	color:#000;
+	text-align:center;
+	
+}
+/*DATA INPUT (name, age etc)*/
+#inner_table input[name=data1]{
+	font-size:40px!important;
+	height:45px;
+	background:#fff;
+	border:1px solid #fff;
+    border-radius:20px;
+	width:100%!important;
+	color:#000;
+}
+#inner_table input[name=data2]{
+	font-size:40px!important;
+	height:45px;
+	background:#fff;
+	border:1px solid #fff;
+    border-radius:20px;
+	width:100%!important;
+	color:#000;
+}
+#inner_table input[name=data3]{
+	font-size:40px!important;
+	height:45px;
+	background:#fff;
+	border:1px solid #fff;
+    border-radius:20px;
+	width:100%!important;
+	color:#000;
+}
+
+/*SUBMIT BUTTON*/
+#inner_table input[type=submit]{
+	display:block;
+	font-size:20px!important;
+	padding:12px;
+	margin-top:10px;
+	color:#fff;
+	border:1px solid #fff;
+    border-radius:20px;
+	background:none;
+	cursor:pointer;
+	transition:background 0.3s, color 0.3s;
+	width:100%;
+}
+#inner_table input[type=submit]:hover{
+	background:#fff;
+	color:#000;
+}
+/*FACBOOK*/
+#facebook_button_initial{
+	background:#fff!important;
+	color:#1b9de4!important;
+	border:1px solid #fff!important;
+	cursor:pointer;
+	transition:background 0.3s;
+	padding:16px!important;
+}
+#facebook_button_initial:hover{
+	background:#1b9de4!important;
+}
+#facebook_button_initial a{
+	color:#1b9de4!important;	
+}
+
+	
+
+/*Email*/
+#email_button_initial{
+	background:#fff!important;
+	color:#1b9de4!important;
+	border:1px solid #fff!important;
+	cursor:pointer;
+	transition:background 0.3s;
+	padding:16px!important;
+	width: 48%!important;
+	font-size: 20px!important;
+}
+#email_button_initial:hover{
+	background:#1b9de4!important;
+}
+#email_button_initial a{
+	color:#1b9de4!important;
+}
+#email_button_initial a:hover{
+	color:#fff!important;
+}
+
+
+
+
+
+
+@media (max-width: 1200px) {
+	
+	.content{
+		margin:0px;
+	}
+	.table_cell{
+		display:block;
+		width:100%;
+	}
+	.right{
+		border-left:0px;
+	}
+	.carousel_item_1{
+		width:90%;
+		position:relative;
+	}
+	.carousel_item_2{
+		width:90%;
+		position:relative;
+		margin-top:-50px;
+		white-space:nowrap;
+	}
+	
+	#inner_table input[type=submit]{
+		font-size:15px!important;
+	}
+    body{
+        background-size:auto;
+    }
+}
+
+@media (max-width: 640px) {
+    h2{
+        font-size: 40px;
+    }
+    #inner_table {
+        width:100%;
+        margin-left:0px;    
+    }
+	#inner_table input[name=code]{
+		margin-right:0px;
+	}
+	.code_label{
+		display:none;
+	}
+	form{
+		width:90%
+	}
+  /*CODE INPUT*/
+#inner_table input[name=code]{
+	font-size:20px!important;
+	height:25px;
+	
+}
+/*DATA INPUT (name, age etc)*/
+#inner_table input[name=data1]{
+	font-size:20px!important;
+	height:25px;
+
+}
+#inner_table input[name=data2]{
+	font-size:20px!important;
+	height:25px;
+}
+#inner_table input[name=data3]{
+	font-size:20px!important;
+	height:25px;
+}
+	
+}

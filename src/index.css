@@ -1,0 +1,34 @@
+/* Estilos globales y variables de diseño */
+
+:root {
+  --font-display: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+
+  --color-bg-fallback: #5fa3ff;
+  --color-card: #000;
+  --color-text-light: #fff;
+  --color-text-dark: #000;
+  --color-accent: #006600;
+  --color-focus: #5fa3ff;
+
+  /* Panel principal */
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --sidebar-width: 260px;
+  --color-sidebar: #0f0f0f;
+  --color-sidebar-text: #c7c7c7;
+  --color-sidebar-active: #4ade80;
+  --color-page: #f4f5f7;
+  --color-surface: #fff;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-muted: #6b7280;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}

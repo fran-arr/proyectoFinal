@@ -1,0 +1,253 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  background: var(--color-page);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+/* ---------- Menú lateral ---------- */
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-sidebar);
+  color: var(--color-sidebar-text);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.marcaAcento {
+  color: var(--color-sidebar-active);
+}
+
+.nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0.75rem;
+}
+
+.link,
+.grupoBoton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.link:hover,
+.grupoBoton:hover {
+  background: rgb(255 255 255 / 0.06);
+  color: #fff;
+}
+
+.link:focus-visible,
+.grupoBoton:focus-visible,
+.botonSalir:focus-visible,
+.botonMenu:focus-visible,
+.botonCerrar:focus-visible {
+  outline: 2px solid var(--color-sidebar-active);
+  outline-offset: 2px;
+}
+
+.linkActivo {
+  background: rgb(74 222 128 / 0.12);
+  color: var(--color-sidebar-active);
+  font-weight: 600;
+}
+
+.grupoBoton {
+  margin-top: 0.75rem;
+}
+
+.chevron {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.chevronAbierto {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0 0 0 0.75rem;
+  border-left: 1px solid rgb(255 255 255 / 0.1);
+  margin-left: 1.35rem;
+}
+
+.submenu .link {
+  font-size: 0.9rem;
+}
+
+/* Usuario al pie del menú */
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.usuarioTexto {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.usuarioTexto strong {
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.usuarioTexto span {
+  text-transform: capitalize;
+}
+
+.botonSalir,
+.botonCerrar,
+.botonMenu {
+  display: grid;
+  place-items: center;
+  padding: 0.4rem;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.botonSalir {
+  margin-left: auto;
+}
+
+.botonSalir:hover,
+.botonCerrar:hover {
+  background: rgb(255 255 255 / 0.08);
+  color: #fff;
+}
+
+.botonCerrar {
+  display: none;
+}
+
+/* ---------- Zona principal ---------- */
+.principal {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem clamp(1rem, 3vw, 2rem);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.botonMenu {
+  display: none;
+}
+
+.botonMenu:hover {
+  background: var(--color-page);
+}
+
+.titulo {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.contenido {
+  width: 100%;
+  max-width: 1100px;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.error {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.overlay {
+  display: none;
+}
+
+/* ---------- Celular / tablet: menú oculto que se abre con el botón ---------- */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    z-index: 20;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebarAbierto {
+    transform: translateX(0);
+  }
+
+  .botonCerrar,
+  .botonMenu {
+    display: grid;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    background: rgb(0 0 0 / 0.45);
+  }
+}

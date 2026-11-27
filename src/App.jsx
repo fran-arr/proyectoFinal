@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { supabase } from './lib/supabase'
-import LoginForm from './components/LoginForm'
+import { modulosVisibles } from './config/modulos'
+import AppLayout from './layouts/AppLayout/AppLayout'
+import Inicio from './pages/Inicio/Inicio'
+import LoginForm from './components/LoginForm/LoginForm'
 import PersonasTab from './components/PersonasTab'
 import SeguimientosTab from './components/SeguimientosTab'
 import GruposTab from './components/GruposTab'
@@ -8,19 +12,11 @@ import FamiliasTab from './components/FamiliasTab'
 import ReunionesTab from './components/ReunionesTab'
 import UsuariosTab from './components/UsuariosTab'
 
-const PESTAÑAS_BASE = [
-  { id: 'personas', label: 'Personas' },
-  { id: 'seguimientos', label: 'Seguimientos' },
-  { id: 'grupos', label: 'Grupos' },
-  { id: 'familias', label: 'Familias' },
-  { id: 'reuniones', label: 'Reuniones' },
-]
-
 export default function App() {
   const [session, setSession] = useState(null)
   const [perfilUsuario, setPerfilUsuario] = useState(null)
   const [cargandoAuth, setCargandoAuth] = useState(true)
-  const [pestañaActiva, setPestañaActiva] = useState('personas')
+  const [perfilListo, setPerfilListo] = useState(false)
 
   const [personas, setPersonas] = useState([])
   const [familias, setFamilias] = useState([])
@@ -48,6 +44,7 @@ export default function App() {
 
     if (usuarioError) {
       setError(`Error consultando perfil: ${usuarioError.message}`)
+      setPerfilListo(true)
       return
     }
 
@@ -58,6 +55,7 @@ export default function App() {
     }
 
     setPerfilUsuario(usuarioData || null)
+    setPerfilListo(true)
     const esAdmin = usuarioData?.roles?.nombre === 'admin'
 
     const consultas = [
@@ -178,6 +176,7 @@ export default function App() {
         cargarPerfilYDatos(newSession.user.id)
       } else {
         setPerfilUsuario(null)
+        setPerfilListo(false)
         setPersonas([])
         setFamilias([])
         setSeguimientos([])
@@ -201,153 +200,75 @@ export default function App() {
 
   const recargar = () => session?.user?.id && cargarPerfilYDatos(session.user.id)
 
-  // AQUÍ ESTÁ LA PARTE 5: Calculamos permisos según el rol
+  // Permisos según el rol
   const rolActual = perfilUsuario?.roles?.nombre
   const esAdmin = rolActual === 'admin'
   const puedeBorrar = rolActual === 'admin' || rolActual === 'pastor'
+  const modulos = modulosVisibles(esAdmin)
 
-  const pestañasVisibles = esAdmin
-    ? [...PESTAÑAS_BASE, { id: 'usuarios', label: 'Usuarios y Roles' }]
-    : PESTAÑAS_BASE
+  const nombreUsuario = perfilUsuario?.personas
+    ? `${perfilUsuario.personas.nombres} ${perfilUsuario.personas.apellidos}`
+    : session.user.email
 
-  const totalVisitas = personas.filter((p) => p.etapa === 'visita').length
-  const totalEnSeguimiento = personas.filter((p) => p.etapa === 'en_seguimiento').length
-  const totalMiembros = personas.filter((p) => p.etapa === 'miembro').length
+  const propsComunes = { personas, puedeBorrar, onRecargar: recargar, setError }
 
   return (
-    <div style={{ padding: 24, fontFamily: 'sans-serif', maxWidth: 960, margin: '0 auto' }}>
-      <header
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: 12,
-          flexWrap: 'wrap',
-          marginBottom: 16,
-        }}
+    <Routes>
+      <Route
+        element={
+          <AppLayout
+            modulos={modulos}
+            nombreUsuario={nombreUsuario}
+            rol={rolActual}
+            error={error}
+            onCerrarSesion={() => supabase.auth.signOut()}
+          />
+        }
       >
-        <div>
-          <h1 style={{ margin: 0 }}>Gestión de Iglesia</h1>
-          <p style={{ margin: '4px 0 0 0', color: '#555' }}>
-            Usuario:{' '}
-            <strong>
-              {perfilUsuario?.personas
-                ? `${perfilUsuario.personas.nombres} ${perfilUsuario.personas.apellidos}`
-                : session.user.email}
-            </strong>{' '}
-            — Rol: <strong>{rolActual || 'sin perfil'}</strong>
-          </p>
-        </div>
-        <button type="button" onClick={() => supabase.auth.signOut()}>
-          Cerrar sesión
-        </button>
-      </header>
-
-      {/* Indicadores rápidos */}
-      <div
-        style={{
-          display: 'flex',
-          gap: 12,
-          flexWrap: 'wrap',
-          marginBottom: 20,
-          padding: 12,
-          background: '#f5f7fa',
-          borderRadius: 8,
-        }}
-      >
-        <span><strong>Visitas:</strong> {totalVisitas}</span>
-        <span>|</span>
-        <span><strong>En seguimiento:</strong> {totalEnSeguimiento}</span>
-        <span>|</span>
-        <span><strong>Miembros:</strong> {totalMiembros}</span>
-        <span>|</span>
-        <span><strong>Grupos:</strong> {grupos.length}</span>
-        <span>|</span>
-        <span><strong>Reuniones:</strong> {reuniones.length}</span>
-      </div>
-
-      {/* Barra de pestañas */}
-      <nav style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
-        {pestañasVisibles.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setPestañaActiva(tab.id)}
-            style={{
-              padding: '8px 14px',
-              fontWeight: pestañaActiva === tab.id ? 'bold' : 'normal',
-              background: pestañaActiva === tab.id ? '#1f2937' : '#e5e7eb',
-              color: pestañaActiva === tab.id ? '#fff' : '#111',
-              border: 'none',
-              borderRadius: 6,
-              cursor: 'pointer',
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
-
-      {error && (
-        <p style={{ color: 'crimson', background: '#ffeef0', padding: 10, borderRadius: 6 }}>
-          Error: {error}
-        </p>
-      )}
-
-      {/* AQUÍ PASAMOS "puedeBorrar" A LAS PESTAÑAS QUE TIENEN BOTÓN ELIMINAR */}
-      {pestañaActiva === 'personas' && (
-        <PersonasTab
-          personas={personas}
-          puedeBorrar={puedeBorrar}
-          onRecargar={recargar}
-          setError={setError}
+        <Route
+          index
+          element={
+            <Inicio
+              perfilUsuario={perfilUsuario}
+              emailSesion={session.user.email}
+              ultimoAcceso={session.user.last_sign_in_at}
+              modulos={modulos}
+              personas={personas}
+              seguimientos={seguimientos}
+              grupos={grupos}
+              familias={familias}
+              reuniones={reuniones}
+            />
+          }
         />
-      )}
-      {pestañaActiva === 'seguimientos' && (
-        <SeguimientosTab
-         personas={personas}
-    seguimientos={seguimientos}
-    puedeBorrar={puedeBorrar}
-    onRecargar={recargar}
-    setError={setError}
+        <Route path="personas" element={<PersonasTab {...propsComunes} />} />
+        <Route
+          path="seguimientos"
+          element={<SeguimientosTab {...propsComunes} seguimientos={seguimientos} />}
         />
-      )}
-      {pestañaActiva === 'grupos' && (
-        <GruposTab
-          personas={personas}
-          grupos={grupos}
-          puedeBorrar={puedeBorrar}
-          onRecargar={recargar}
-          setError={setError}
+        <Route path="grupos" element={<GruposTab {...propsComunes} grupos={grupos} />} />
+        <Route path="familias" element={<FamiliasTab {...propsComunes} familias={familias} />} />
+        <Route path="reuniones" element={<ReunionesTab {...propsComunes} reuniones={reuniones} />} />
+        <Route
+          path="usuarios"
+          element={
+            !perfilListo ? (
+              <p>Cargando...</p>
+            ) : esAdmin ? (
+              <UsuariosTab
+                personas={personas}
+                roles={roles}
+                usuariosSistema={usuariosSistema}
+                onRecargar={recargar}
+                setError={setError}
+              />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
         />
-      )}
-      {pestañaActiva === 'familias' && (
-        <FamiliasTab
-         personas={personas}
-    familias={familias}
-    puedeBorrar={puedeBorrar}
-    onRecargar={recargar}
-    setError={setError}
-        />
-      )}
-      {pestañaActiva === 'reuniones' && (
-        <ReunionesTab
-          personas={personas}
-          reuniones={reuniones}
-          puedeBorrar={puedeBorrar}
-          onRecargar={recargar}
-          setError={setError}
-        />
-      )}
-      {pestañaActiva === 'usuarios' && esAdmin && (
-        <UsuariosTab
-          personas={personas}
-          roles={roles}
-          usuariosSistema={usuariosSistema}
-          onRecargar={recargar}
-          setError={setError}
-        />
-      )}
-    </div>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   )
 }
