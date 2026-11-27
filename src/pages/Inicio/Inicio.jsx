@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../../components/Icon/Icon'
+import MiniCalendario from '../../components/MiniCalendario/MiniCalendario'
+import { obtenerHoyClave } from '../../utils/fechas'
 import styles from './Inicio.module.css'
 
 // Las fechas de Supabase llegan como 'YYYY-MM-DD'. Se separan a mano para evitar
@@ -61,10 +63,15 @@ export default function Inicio({
     { label: 'Miembros', valor: contarEtapa('miembro'), ruta: '/personas', icono: 'users' },
     { label: 'Grupos activos', valor: grupos.filter((g) => g.activo !== false).length, ruta: '/grupos', icono: 'layers' },
     { label: 'Familias', valor: familias.length, ruta: '/familias', icono: 'heart' },
-    { label: 'Reuniones', valor: reuniones.length, ruta: '/reuniones', icono: 'calendar' },
+    { label: 'Reuniones', valor: reuniones.length, ruta: '/reuniones', icono: 'clipboard' },
   ]
 
   const ultimasReuniones = reuniones.slice(0, 4)
+  const [hoyClave] = useState(obtenerHoyClave)
+  const proximosEventos = reuniones
+    .filter((r) => r.fecha && String(r.fecha).slice(0, 10) >= hoyClave)
+    .sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)))
+    .slice(0, 5)
   const ultimosSeguimientos = seguimientos.slice(0, 4)
 
   return (
@@ -143,6 +150,40 @@ export default function Inicio({
               <span className={styles.indicadorLabel}>{ind.label}</span>
             </Link>
           ))}
+        </section>
+      </div>
+
+      <div className={styles.columnas2}>
+        <MiniCalendario reuniones={reuniones} />
+
+        {/* Próximos eventos */}
+        <section className={styles.tarjeta}>
+          <div className={styles.cabeceraTarjeta}>
+            <h3 className={styles.tituloTarjeta}>Próximos eventos</h3>
+            <Link to="/calendario" className={styles.verTodo}>
+              Ver calendario <Icon name="arrowRight" size={14} />
+            </Link>
+          </div>
+          {proximosEventos.length === 0 ? (
+            <p className={styles.vacio}>No hay eventos programados desde hoy.</p>
+          ) : (
+            <ul className={styles.lista}>
+              {proximosEventos.map((r) => (
+                <li key={r.id}>
+                  <div>
+                    <strong>{r.titulo}</strong>
+                    <span>
+                      {texto(r.categoria)}
+                      {r.lugar ? ` · ${r.lugar}` : ''}
+                    </span>
+                  </div>
+                  <span className={styles.contador}>
+                    {String(r.fecha).slice(0, 10) === hoyClave ? 'Hoy' : formatearFecha(r.fecha)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
 

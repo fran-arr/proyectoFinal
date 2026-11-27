@@ -16,6 +16,13 @@ const PATHS = {
   shield: ['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
   grid: ['M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z'],
   chevronDown: ['M6 9l6 6 6-6'],
+  chevronLeft: ['M15 18l-6-6 6-6'],
+  chevronRight: ['M9 18l6-6-6-6'],
+  clipboard: [
+    'M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z',
+    'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2',
+    'M9 14l2 2 4-4',
+  ],
   menu: ['M3 6h18M3 12h18M3 18h18'],
   close: ['M18 6 6 18M6 6l12 12'],
   logout: ['M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4', 'M16 17l5-5-5-5', 'M21 12H9'],

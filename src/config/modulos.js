@@ -32,8 +32,15 @@ export const MODULOS = [
     id: 'reuniones',
     ruta: '/reuniones',
     label: 'Reuniones',
-    icono: 'calendar',
+    icono: 'clipboard',
     descripcion: 'Servicios, eventos y asistencia.',
+  },
+  {
+    id: 'calendario',
+    ruta: '/calendario',
+    label: 'Calendario',
+    icono: 'calendar',
+    descripcion: 'Vista mensual de reuniones y eventos.',
   },
   {
     id: 'usuarios',

@@ -11,6 +11,7 @@ import GruposTab from './components/GruposTab'
 import FamiliasTab from './components/FamiliasTab'
 import ReunionesTab from './components/ReunionesTab'
 import UsuariosTab from './components/UsuariosTab'
+import CalendarioTab from './components/CalendarioTab'
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -109,6 +110,7 @@ export default function App() {
           categoria,
           fecha,
           lugar,
+          notas,
           asistencias (
             hora_registro,
             personas ( id, nombres, apellidos, etapa )
@@ -249,6 +251,17 @@ export default function App() {
         <Route path="grupos" element={<GruposTab {...propsComunes} grupos={grupos} />} />
         <Route path="familias" element={<FamiliasTab {...propsComunes} familias={familias} />} />
         <Route path="reuniones" element={<ReunionesTab {...propsComunes} reuniones={reuniones} />} />
+        <Route
+          path="calendario"
+          element={
+            <CalendarioTab
+              reuniones={reuniones}
+              puedeBorrar={puedeBorrar}
+              onRecargar={recargar}
+              setError={setError}
+            />
+          }
+        />
         <Route
           path="usuarios"
           element={
