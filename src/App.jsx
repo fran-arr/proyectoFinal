@@ -6,8 +6,9 @@ import SeguimientosTab from './components/SeguimientosTab'
 import GruposTab from './components/GruposTab'
 import FamiliasTab from './components/FamiliasTab'
 import ReunionesTab from './components/ReunionesTab'
+import UsuariosTab from './components/UsuariosTab'
 
-const PESTAÑAS = [
+const PESTAÑAS_BASE = [
   { id: 'personas', label: 'Personas' },
   { id: 'seguimientos', label: 'Seguimientos' },
   { id: 'grupos', label: 'Grupos' },
@@ -26,6 +27,8 @@ export default function App() {
   const [seguimientos, setSeguimientos] = useState([])
   const [grupos, setGrupos] = useState([])
   const [reuniones, setReuniones] = useState([])
+  const [roles, setRoles] = useState([])
+  const [usuariosSistema, setUsuariosSistema] = useState([])
   const [error, setError] = useState(null)
 
   async function cargarPerfilYDatos(userId) {
@@ -48,9 +51,16 @@ export default function App() {
       return
     }
 
-    setPerfilUsuario(usuarioData || null)
+    if (usuarioData && usuarioData.activo === false) {
+      setError('Tu cuenta está suspendida. Contacta al administrador.')
+      await supabase.auth.signOut()
+      return
+    }
 
-    const [personasRes, familiasRes, seguimientosRes, gruposRes, reunionesRes] = await Promise.all([
+    setPerfilUsuario(usuarioData || null)
+    const esAdmin = usuarioData?.roles?.nombre === 'admin'
+
+    const consultas = [
       supabase.from('personas').select('*').order('id', { ascending: false }),
       supabase
         .from('familias')
@@ -108,7 +118,28 @@ export default function App() {
         `)
         .order('fecha', { ascending: false })
         .order('id', { ascending: false }),
-    ])
+    ]
+
+    if (esAdmin) {
+      consultas.push(
+        supabase.from('roles').select('*').order('id', { ascending: true }),
+        supabase
+          .from('usuarios_sistema')
+          .select(`
+            id,
+            username,
+            activo,
+            rol_id,
+            auth_user_id,
+            personas ( id, nombres, apellidos ),
+            roles ( id, nombre )
+          `)
+          .order('id', { ascending: true })
+      )
+    }
+
+    const resultados = await Promise.all(consultas)
+    const [personasRes, familiasRes, seguimientosRes, gruposRes, reunionesRes, rolesRes, usuariosRes] = resultados
 
     if (personasRes.error) return setError(personasRes.error.message)
     if (familiasRes.error) return setError(familiasRes.error.message)
@@ -121,6 +152,16 @@ export default function App() {
     setSeguimientos(seguimientosRes.data || [])
     setGrupos(gruposRes.data || [])
     setReuniones(reunionesRes.data || [])
+
+    if (esAdmin) {
+      if (rolesRes?.error) return setError(rolesRes.error.message)
+      if (usuariosRes?.error) return setError(usuariosRes.error.message)
+      setRoles(rolesRes?.data || [])
+      setUsuariosSistema(usuariosRes?.data || [])
+    } else {
+      setRoles([])
+      setUsuariosSistema([])
+    }
   }
 
   useEffect(() => {
@@ -142,6 +183,8 @@ export default function App() {
         setSeguimientos([])
         setGrupos([])
         setReuniones([])
+        setRoles([])
+        setUsuariosSistema([])
       }
     })
 
@@ -157,6 +200,10 @@ export default function App() {
   }
 
   const recargar = () => session?.user?.id && cargarPerfilYDatos(session.user.id)
+  const esAdmin = perfilUsuario?.roles?.nombre === 'admin'
+  const pestañasVisibles = esAdmin
+    ? [...PESTAÑAS_BASE, { id: 'usuarios', label: 'Usuarios y Roles' }]
+    : PESTAÑAS_BASE
 
   const totalVisitas = personas.filter((p) => p.etapa === 'visita').length
   const totalEnSeguimiento = personas.filter((p) => p.etapa === 'en_seguimiento').length
@@ -216,7 +263,7 @@ export default function App() {
 
       {/* Barra de pestañas */}
       <nav style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
-        {PESTAÑAS.map((tab) => (
+        {pestañasVisibles.map((tab) => (
           <button
             key={tab.id}
             type="button"
@@ -268,6 +315,15 @@ export default function App() {
         <ReunionesTab
           personas={personas}
           reuniones={reuniones}
+          onRecargar={recargar}
+          setError={setError}
+        />
+      )}
+      {pestañaActiva === 'usuarios' && esAdmin && (
+        <UsuariosTab
+          personas={personas}
+          roles={roles}
+          usuariosSistema={usuariosSistema}
           onRecargar={recargar}
           setError={setError}
         />
