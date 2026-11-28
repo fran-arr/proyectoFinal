@@ -95,7 +95,12 @@ export default function Inicio({
       <div className={styles.columnas}>
         {/* Perfil del usuario */}
         <section className={`${styles.tarjeta} ${styles.perfil}`}>
-          <h3 className={styles.tituloTarjeta}>Mi perfil</h3>
+          <div className={styles.cabeceraTarjeta}>
+            <h3 className={styles.tituloTarjeta}>Mi perfil</h3>
+            <Link to="/perfil" className={styles.verTodo}>
+              Ver perfil <Icon name="arrowRight" size={14} />
+            </Link>
+          </div>
           <div className={styles.perfilCabecera}>
             <span className={styles.avatarGrande} aria-hidden="true">
               {nombre

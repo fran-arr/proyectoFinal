@@ -9,7 +9,11 @@ export default function AppLayout({ modulos, nombreUsuario, rol, error, onCerrar
   const [modulosAbiertos, setModulosAbiertos] = useState(true)
 
   const moduloActual = modulos.find((m) => location.pathname.startsWith(m.ruta))
-  const tituloPagina = moduloActual ? moduloActual.label : 'Inicio'
+  const tituloPagina = location.pathname.startsWith('/perfil')
+    ? 'Mi perfil'
+    : moduloActual
+      ? moduloActual.label
+      : 'Inicio'
   const iniciales = nombreUsuario
     .split(' ')
     .filter(Boolean)
@@ -77,13 +81,22 @@ export default function AppLayout({ modulos, nombreUsuario, rol, error, onCerrar
         </nav>
 
         <div className={styles.usuario}>
-          <span className={styles.avatar} aria-hidden="true">
-            {iniciales || '?'}
-          </span>
-          <div className={styles.usuarioTexto}>
-            <strong>{nombreUsuario}</strong>
-            <span>{rol || 'sin perfil'}</span>
-          </div>
+          <NavLink
+            to="/perfil"
+            className={({ isActive }) =>
+              `${styles.usuarioEnlace} ${isActive ? styles.usuarioEnlaceActivo : ''}`
+            }
+            onClick={cerrarMenuMovil}
+            title="Ver mi perfil"
+          >
+            <span className={styles.avatar} aria-hidden="true">
+              {iniciales || '?'}
+            </span>
+            <span className={styles.usuarioTexto}>
+              <strong>{nombreUsuario}</strong>
+              <span>{rol || 'sin perfil'}</span>
+            </span>
+          </NavLink>
           <button
             type="button"
             className={styles.botonSalir}

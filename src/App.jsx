@@ -12,6 +12,7 @@ import FamiliasTab from './components/FamiliasTab'
 import ReunionesTab from './components/ReunionesTab'
 import UsuariosTab from './components/UsuariosTab'
 import CalendarioTab from './components/CalendarioTab'
+import Perfil from './pages/Perfil/Perfil'
 
 export default function App() {
   const [session, setSession] = useState(null)
@@ -37,7 +38,7 @@ export default function App() {
         id,
         username,
         activo,
-        personas ( id, nombres, apellidos, email ),
+        personas ( id, nombres, apellidos, email, telefono ),
         roles ( id, nombre, descripcion )
       `)
       .eq('auth_user_id', userId)
@@ -240,6 +241,16 @@ export default function App() {
               grupos={grupos}
               familias={familias}
               reuniones={reuniones}
+            />
+          }
+        />
+        <Route
+          path="perfil"
+          element={
+            <Perfil
+              perfilUsuario={perfilUsuario}
+              usuarioAuth={session.user}
+              onRecargar={recargar}
             />
           }
         />
